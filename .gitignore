@@ -1,0 +1,46 @@
+# Node modules
+node_modules/
+
+# Build output
+build/
+dist/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE/editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Dependency directories
+bower_components/
+jspm_packages/
+
+# Miscellaneous
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# React Native
+.expo/
+*.expo/
+*.expo-shared/
+
+# Storybook
+storybook-static/
+
+# Other
+*.tgz
+*.lock

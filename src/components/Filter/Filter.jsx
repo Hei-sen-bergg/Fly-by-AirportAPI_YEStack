@@ -52,20 +52,54 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 
 // fetching routes per specfified criteria
+
+
 const fetchFilteredRoutes = async (filters) => {
   try {
-    const queryParams = new URLSearchParams(filters).toString();
-    const encodedUrl = encodeURIComponent(`https://api.aviationapi.com/v1/preferred-routes/search?${queryParams}`);
+    const params = new URLSearchParams();
+
+    if (filters.origin && filters.origin !== 'All') {
+      params.append('origin', filters.origin);
+    }
+    if (filters.destination && filters.destination !== 'All') {
+      params.append('dest', filters.destination);
+    }
+    if (filters.altitude && filters.altitude !== 'All') {
+      params.append('alt', filters.altitude);
+    }
+
+    const apiUrl = `https://api.aviationapi.com/v1/preferred-routes/search?${params.toString()}`;
+    console.log('Constructed API URL:', apiUrl); 
+    
+    const encodedUrl = encodeURIComponent(apiUrl);
     const { data } = await axios.get(`https://api.allorigins.win/get?url=${encodedUrl}`);
     
-    // Parse the data returned from the proxy
     const routes = JSON.parse(data.contents);
+    console.log('Fetched Routes:', routes); 
+    
     return routes;
   } catch (error) {
     console.error('Error fetching filtered routes:', error);
     return [];
   }
 };
+
+
+
+// const fetchFilteredRoutes = async (filters) => {
+//   try {
+//     const queryParams = new URLSearchParams(filters).toString();
+//     const encodedUrl = encodeURIComponent(`https://api.aviationapi.com/v1/preferred-routes/search?${queryParams}`);
+//     const { data } = await axios.get(`https://api.allorigins.win/get?url=${encodedUrl}`);
+    
+//     // Parse the data returned from the proxy
+//     const routes = JSON.parse(data.contents);
+//     return routes;
+//   } catch (error) {
+//     console.error('Error fetching filtered routes:', error);
+//     return [];
+//   }
+// };
 
 
 const Filter = () => {
@@ -89,17 +123,19 @@ const Filter = () => {
 
 
   useEffect(() => {
-
     const fetchFiltered = async () => {
+      console.log('Current filters:', { origin, destination, altitude });
       if (origin !== 'All' || destination !== 'All' || altitude !== 'All') {
         try {
           const allRoutes = await fetchFilteredRoutes({ origin, destination, altitude });
+          console.log('Fetched filtered routes:', allRoutes);
           const limitedFilteredRoutes = allRoutes.slice(0, 50); // Limit to 50 filtered items
           setFilteredRoutes(limitedFilteredRoutes);
         } catch (err) {
           console.error('Error fetching filtered routes:', err);
         }
       } else {
+        console.log('No filters applied, using all routes');
         setFilteredRoutes(routes ? routes.slice(0, 50) : []); // Limit to 50 items if no filter
       }
     };

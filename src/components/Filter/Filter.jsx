@@ -32,6 +32,24 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 };
 
 
+// const fetchRoutes = async () => {
+//   try {
+//     const url = 'https://api.aviationapi.com/v1/preferred-routes';
+
+//     const response = await axios.get(url);
+
+//     const routes = response.data;
+
+//     const limitedRoutes = routes.slice(0, 50);
+
+//     return limitedRoutes;
+//   } catch (error) {
+//     console.error('Error fetching routes:', error);
+//     return [];
+//   }
+// };
+
+
 
 // fetching routes per specfified criteria
 const fetchFilteredRoutes = async (filters) => {
@@ -107,82 +125,92 @@ const Filter = () => {
   if (isError) return <p>Oops !! Error fetching data: {error.message}</p>;
 
   return (
-    <div className="filter-container p-4">
-  <div className="filter-dropdowns flex space-x-4"> 
-    <DropdownMenu>
-      <DropdownMenuTrigger className="bg-gray-200 p-2 rounded">{origin}</DropdownMenuTrigger> 
-      <DropdownMenuContent className="bg-white p-2 rounded shadow-md"> 
-        {uniqueValues('origin').map(value => (
-          <DropdownMenuItem
-            key={value}
-            onClick={() => setOrigin(value)}
-            className="hover:bg-gray-100 p-2 cursor-pointer"
-          >
-            {value}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="filter-container p-4 flex flex-col items-center">
+      <div className="filter-dropdowns flex space-x-4 items-center justify-center">
+      <h1 style={{ fontSize: '1.5rem' }} className="text-center font-bold mt-6">Filter by :</h1>
 
-    <DropdownMenu>
-      <DropdownMenuTrigger className="bg-gray-200 p-2 rounded">{destination}</DropdownMenuTrigger> 
-      <DropdownMenuContent className="bg-white p-2 rounded shadow-md"> 
-        {uniqueValues('destination').map(value => (
-          <DropdownMenuItem
-            key={value}
-            onClick={() => setDestination(value)}
-            className="hover:bg-gray-100 p-2 cursor-pointer"
-          >
-            {value}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+        <div className="flex flex-col items-center">
+      <label htmlFor="origin" className="mb-2">Origin</label>
+      <DropdownMenu>
+        <DropdownMenuTrigger id="origin" className="bg-gray-200 p-2 rounded text-center">{origin}</DropdownMenuTrigger>
+        <DropdownMenuContent className="bg-white p-2 rounded shadow-md">
+          {uniqueValues('origin').map((value) => (
+            <DropdownMenuItem
+              key={value}
+              onClick={() => setOrigin(value)}
+              className="hover:bg-gray-100 p-2 cursor-pointer text-center"
+            >
+              {value}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
 
-    <DropdownMenu>
-      <DropdownMenuTrigger className="bg-gray-200 p-2 rounded">{altitude}</DropdownMenuTrigger> 
-      <DropdownMenuContent className="bg-white p-2 rounded shadow-md"> 
-        {uniqueValues('altitude').map(value => (
-          <DropdownMenuItem
-            key={value}
-            onClick={() => setAltitude(value)}
-            className="hover:bg-gray-100 p-2 cursor-pointer"
-          >
-            {value}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    {/* Destination Filter */}
+    <div className="flex flex-col items-center">
+      <label htmlFor="destination" className="mb-2 ">Destination</label>
+      <DropdownMenu>
+        <DropdownMenuTrigger id="destination" className="bg-gray-200 p-2 rounded text-center">{destination}</DropdownMenuTrigger>
+        <DropdownMenuContent className="bg-white p-2 rounded shadow-md">
+          {uniqueValues('destination').map((value) => (
+            <DropdownMenuItem
+              key={value}
+              onClick={() => setDestination(value)}
+              className="hover:bg-gray-100 p-2 cursor-pointer text-center"
+            >
+              {value}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
 
-    <button
-      onClick={() => setFilteredRoutes(routes || [])}
-      className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-    >
-      Search
-    </button>
-  </div>
+    {/* Altitude Filter */}
+    <div className="flex flex-col items-center">
+      <label htmlFor="altitude" className="mb-2 ">Altitude</label>
+      <DropdownMenu>
+        <DropdownMenuTrigger id="altitude" className="bg-gray-200 p-2 rounded text-center">{altitude}</DropdownMenuTrigger>
+        <DropdownMenuContent className="bg-white p-2 rounded shadow-md">
+          {uniqueValues('altitude').map((value) => (
+            <DropdownMenuItem
+              key={value}
+              onClick={() => setAltitude(value)}
+              className="hover:bg-gray-100 p-2 cursor-pointer text-center"
+            >
+              {value}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+      </div>
 
-  <div className="results mt-4">
-    {filteredRoutes.length === 0 && !isLoading && !isError && <p>No results found.</p>}
-    {filteredRoutes.map((route, index) => {
-      // Unique key for each card
-      const cardKey = `${route.origin}-${route.destination}-${route.altitude}-${index}`;
-      return (
-        <Card key={cardKey} className="result-card text-center m-4"> 
-          <CardHeader>
-            <CardTitle>{route.route}</CardTitle>
-            <CardDescription>
-              <p><strong>Origin:</strong> {route.origin}</p>
-              <p><strong>Destination:</strong> {route.destination}</p>
-              <p><strong>Altitude:</strong> {route.altitude}</p>
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      );
-    })}
-  </div>
-</div>
-
+      <div className="results mt-4 flex flex-wrap justify-center">
+        {filteredRoutes.length === 0 && !isLoading && !isError && <p>No results found.</p>}
+        {filteredRoutes.map((route, index) => {
+          const cardKey = `${route.origin}-${route.destination}-${route.altitude}-${index}`;
+          return (
+            <Card key={cardKey} className="result-card w-1/2 p-4 bg-white shadow-md rounded-md bg-opacity-85 text-center m-4">
+              <CardHeader>
+                <CardTitle>{route.route}</CardTitle>
+                <CardDescription>
+                  <p>
+                    <strong>Origin:</strong> {route.origin}
+                  </p>
+                  <p>
+                    <strong>Destination:</strong> {route.destination}
+                  </p>
+                  <p>
+                    <strong>Altitude:</strong> {route.altitude}
+                  </p>
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 

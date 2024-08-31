@@ -1,6 +1,6 @@
 const Navbar = ({ onSelectionChange }) => (
   <nav className="bg-gray-800 p-4 flex justify-between items-center">
-    <div className="text-white font-bold text-xl">Fly-by</div>
+    <div className="text-white font-bold text-xl"><h1>Fly-by</h1></div>
     <div className="space-x-8">
       <button onClick={() => onSelectionChange('flights')} className="text-white">
         Search Flights
